@@ -1,5 +1,6 @@
-import { createStore, applyMiddleware } from "../my-redux";
+import { createStore, applyMiddleware, combineReducers } from "../my-redux";
 import isPromise from "is-promise";
+
 function counterReducer(state = 0, action) {
   switch (action.type) {
     case "ADD":
@@ -11,42 +12,57 @@ function counterReducer(state = 0, action) {
   }
 }
 
+//middlewareChain [promise, thunk, logger]
 const store = createStore(
-  counterReducer,
+  // counterReducer,
+  combineReducers({
+    count: counterReducer,
+  }),
   applyMiddleware(promise, thunk, logger)
 );
 
 export default store;
 
+//middlewareChain [promise, thunk, logger]
+//(...args) => promise(thunk(logger(...args)))(dispatch)
+
 function logger({ getState, dispatch }) {
-  console.log("loggerloggerloggerloggerlogger");
-  return (next) => (action) => {
-    console.log("=======================");
-    console.log(action.type + "执行了");
-    const prevState = getState();
-    console.log("prev state", prevState);
-    const returnValue = next(action);
-    //等状态值修改之后，再执行getState
-    const nextState = getState();
-    console.log("next state", nextState);
-    console.log("=======================");
-    return returnValue;
+  return function (next) {
+    return function (action) {
+      console.log("=======================");
+      console.log(action.type + "执行了");
+      const prevState = getState();
+      console.log("prev state", prevState);
+      const returnValue = next(action);
+      //等状态值修改之后，再执行getState
+      const nextState = getState();
+      console.log("next state", nextState);
+      console.log("=======================");
+      return returnValue;
+    };
   };
 }
 
 function thunk({ getState, dispatch }) {
-  console.log("thunkthunkthunkthunkthunkthunk");
-  return (next) => (action) => {
-    if (typeof action === "function") {
-      return action(dispatch, getState);
-    }
-    return next(action);
+  //next = store.dispatch
+  return function (next) {
+    //先执行这里
+    return function (action) {
+      if (typeof action === "function") {
+        return action(dispatch, getState);
+      }
+
+      return next(action);
+    };
   };
 }
 
 function promise({ getState, dispatch }) {
-  console.log("promisepromisepromisepromisepromisepromise");
-  return (next) => (action) => {
-    return isPromise(action) ? action.then(dispatch) : next(action);
+  //这里的next指的是上一次的返回值
+  return function (next) {
+    //再执行这里
+    return function (action) {
+      return isPromise(action) ? action.then(dispatch) : next(action);
+    };
   };
 }

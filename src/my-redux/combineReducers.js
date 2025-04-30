@@ -8,7 +8,6 @@ export default function combineReducers(reducers) {
       nextState[key] = reducer(state[key], action);
       hasChanged = hasChanged || nextState[key] !== state[key];
     }
-    debugger;
 
     hasChanged =
       hasChanged || Object.keys(nextState).length !== Object.keys(state).length;

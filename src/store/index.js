@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, combineReducers } from "../my-redux";
 import isPromise from "is-promise";
 
-function counterReducer(state = 0, action) {
+export function counterReducer(state = 0, action) {
   switch (action.type) {
     case "ADD":
       return state + 1;

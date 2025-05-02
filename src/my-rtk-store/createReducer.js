@@ -1,0 +1,31 @@
+import { createNextState } from "@reduxjs/toolkit";
+
+export default function createReducer(initialState, mapOrBuilderCallback) {
+  let [actionsMap] = executeReducerBuildCallback(mapOrBuilderCallback);
+  function reducer(state = initialState, action) {
+    const caseReducers = [actionsMap[action.type]];
+    return caseReducers.reduce((previousState, caseReducer) => {
+      if (caseReducer) {
+        return createNextState(previousState, (draft) => {
+          return caseReducer(draft, action);
+        });
+      }
+      return previousState;
+    }, state);
+  }
+  return reducer;
+}
+
+function executeReducerBuildCallback(mapOrBuilderCallback) {
+  const actionsMap = {};
+  const builder = {
+    addCase: (type, reducer) => {
+      actionsMap[type] = reducer;
+      return builder;
+    },
+  };
+
+  mapOrBuilderCallback(builder);
+
+  return [actionsMap];
+}

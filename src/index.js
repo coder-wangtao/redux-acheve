@@ -4,13 +4,15 @@ import ReduxPage from "./ReduxPage";
 import HooksPage from "./HooksPage";
 import ReactReduxPage from "./ReactReduxPage";
 import ReactReduxHookPage from "./ReactReduxHookPage";
+import ReduxToolKitPage from "./ReduxToolKitPage";
+
 import { Provider } from "./my-react-redux";
 import store from "./store";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <div className="app">
     <Provider store={store}>
-      <ReactReduxHookPage omg="omg" />
+      <ReduxToolKitPage omg="omg" />
     </Provider>
   </div>
 );

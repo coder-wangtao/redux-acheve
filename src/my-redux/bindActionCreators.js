@@ -1,5 +1,5 @@
 function bindActionCreator(creator, dispatch) {
-    return (...args) => dispatch(creator(...args))
+  return (...args) => dispatch(creator(...args));
 }
 
 export default function bindActionCreators(creators, dispatch) {

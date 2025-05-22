@@ -1,9 +1,10 @@
 import createAction from "./createAction";
-import createReducer from './createReducer'
+import createReducer from "./createReducer";
+
 export function createSlice({ name, initialState, reducers }) {
   const reducerNames = Object.keys(reducers);
   const actionCreators = {};
-  const sliceCaseReducersByType = {};
+  const sliceCaseReducersByType = {}; //action
 
   reducerNames.forEach((reducerName) => {
     const r = reducers[reducerName];
@@ -11,6 +12,8 @@ export function createSlice({ name, initialState, reducers }) {
     sliceCaseReducersByType[type] = r;
     actionCreators[reducerName] = createAction(type);
   });
+
+  console.log(sliceCaseReducersByType);
 
   function buildReducer() {
     return createReducer(initialState, (builder) => {
@@ -26,6 +29,8 @@ export function createSlice({ name, initialState, reducers }) {
     actions: actionCreators,
     reducer: (state, action) => {
       if (!_reducer) _reducer = buildReducer();
+
+      console.log(_reducer(state, action));
       return _reducer(state, action);
     },
   };

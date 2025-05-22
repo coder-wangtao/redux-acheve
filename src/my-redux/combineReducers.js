@@ -1,8 +1,12 @@
 export default function combineReducers(reducers) {
   // reducers; //key value
+  // {
+  //  state: () => {}
+  // }
   return function combination(state = {}, action) {
     let nextState = {};
     let hasChanged = false;
+
     for (const key in reducers) {
       const reducer = reducers[key];
       nextState[key] = reducer(state[key], action);
@@ -15,3 +19,14 @@ export default function combineReducers(reducers) {
     return hasChanged ? nextState : state;
   };
 }
+
+// export function counterReducer(state = 0, action) {
+//   switch (action.type) {
+//     case "ADD":
+//       return state + 1;
+//     case "MINUS":
+//       return state - 1;
+//     default:
+//       return state;
+//   }
+// }

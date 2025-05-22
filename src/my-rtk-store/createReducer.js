@@ -1,9 +1,12 @@
+//类似immer
 import { createNextState } from "@reduxjs/toolkit";
 
 export default function createReducer(initialState, mapOrBuilderCallback) {
   let [actionsMap] = executeReducerBuildCallback(mapOrBuilderCallback);
+
   function reducer(state = initialState, action) {
     const caseReducers = [actionsMap[action.type]];
+    debugger;
     return caseReducers.reduce((previousState, caseReducer) => {
       if (caseReducer) {
         return createNextState(previousState, (draft) => {
@@ -13,6 +16,7 @@ export default function createReducer(initialState, mapOrBuilderCallback) {
       return previousState;
     }, state);
   }
+
   return reducer;
 }
 
@@ -26,6 +30,19 @@ function executeReducerBuildCallback(mapOrBuilderCallback) {
   };
 
   mapOrBuilderCallback(builder);
-
+  console.log(actionsMap);
   return [actionsMap];
 }
+
+//sliceCaseReducersByType
+// {
+//   'counter/decrement':() => {},
+//   'counter/increment':() => {},
+//   'counter/incrementByAmount':() => {},
+// }
+
+//  (builder) => {
+//       for (let key in sliceCaseReducersByType) {
+//         builder.addCase(key, sliceCaseReducersByType[key]);
+//       }
+//     }

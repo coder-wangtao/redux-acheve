@@ -16,12 +16,14 @@ export default function createStore(reducer, enhancer) {
   function getState() {
     return currentState;
   }
+
   function dispatch(action) {
     currentState = reducer(currentState, action);
     currentListeners.forEach((listener) => listener());
   }
 
   function subscribe(listener) {
+    //listener是react useSyncExternalStore源码中内置的定义的(会判断前后state值是否一致，然后触发更新)
     currentListeners.push(listener);
     return () => {
       const index = currentListeners.indexOf(listener);

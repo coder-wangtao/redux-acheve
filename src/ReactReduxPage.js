@@ -10,19 +10,19 @@ export default connect(
   },
   //mapDispatchToProps:object|function
   //object
-  {
-    add: () => ({ type: "ADD" }),
-    minus: () => ({ type: "MINUS" }),
-  }
-  //function
-  // (dispatch) => {
-  //   let creators = {
-  //     add: () => ({ type: "ADD" }),
-  //     minus: () => ({ type: "MINUS" }),
-  //   };
-  //   creators = bindActionCreators(creators, dispatch);
-  //   return { dispatch, ...creators };
+  // {
+  //   add: () => ({ type: "ADD" }),
+  //   minus: () => ({ type: "MINUS" }),
   // }
+  // function
+  (dispatch) => {
+    let creators = {
+      add: () => ({ type: "ADD" }),
+      minus: () => ({ type: "MINUS" }),
+    };
+    creators = bindActionCreators(creators, dispatch);
+    return { dispatch, ...creators };
+  }
 )(
   class ReactReduxPage extends Component {
     render() {

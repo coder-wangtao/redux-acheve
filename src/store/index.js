@@ -27,8 +27,11 @@ export default store;
 //(...args) => promise(thunk(logger(...args)))(dispatch)
 
 function logger({ getState, dispatch }) {
+  //next = 首先传过来的dispatch
   return function (next) {
     return function (action) {
+      console.log("loggerloggerloggerloggerlogger");
+
       console.log("=======================");
       console.log(action.type + "执行了");
       const prevState = getState();
@@ -48,6 +51,8 @@ function thunk({ getState, dispatch }) {
   return function (next) {
     //先执行这里
     return function (action) {
+      console.log("thunkthunkthunkthunkthunkthunk");
+
       if (typeof action === "function") {
         return action(dispatch, getState);
       }
@@ -62,6 +67,7 @@ function promise({ getState, dispatch }) {
   return function (next) {
     //再执行这里
     return function (action) {
+      console.log("promisepromisepromisepromisepromise");
       return isPromise(action) ? action.then(dispatch) : next(action);
     };
   };

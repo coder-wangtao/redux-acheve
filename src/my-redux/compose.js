@@ -10,6 +10,7 @@ export default function compose(...funcs) {
   if (funcs.length === 1) {
     return funcs[0];
   }
+
   return funcs.reduce(function (a, b) {
     return function (...args) {
       return a(b(...args));

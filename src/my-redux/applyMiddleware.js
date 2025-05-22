@@ -12,7 +12,6 @@ export default function applyMiddleware(...middlewares) {
     };
 
     const middlewareChain = middlewares.map((middleware) => middleware(midAPI));
-
     //把所有的中间件的函数都执行了，同时还执行store.dispatch
     //middlewareChain [promise, thunk, logger]
     //(...args) => promise(thunk(logger(...args)))(dispatch);

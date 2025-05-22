@@ -9,6 +9,8 @@ import React, {
   useSyncExternalStore,
 } from "react";
 import { bindActionCreators } from "../my-redux";
+import useSyncExternalStoreExports from "use-sync-external-store/shim/with-selector";
+const { useSyncExternalStoreWithSelector } = useSyncExternalStoreExports;
 //1 创建context对象
 const Context = React.createContext();
 //2 Provider组件传递value (store)
@@ -25,6 +27,7 @@ export const connect = (mapStateToProps, mapDispatchToProps) => {
   return (WrappedComponent) => {
     return (props) => {
       const store = useContext(Context);
+
       const { getState, dispatch, subscribe } = store;
 
       let dispatchProps = { dispatch };
@@ -34,8 +37,7 @@ export const connect = (mapStateToProps, mapDispatchToProps) => {
       } else if (typeof mapDispatchToProps === "object") {
         dispatchProps = bindActionCreators(mapDispatchToProps, dispatch);
       }
-
-      const forceUpdate = useForceUpdate();
+      // const forceUpdate = useForceUpdate();
 
       // useLayoutEffect(() => {
       //   const unsubscribe = subscribe(() => {
@@ -46,9 +48,8 @@ export const connect = (mapStateToProps, mapDispatchToProps) => {
       //   };
       // }, [subscribe]);
 
-      const state = useSyncExternalStore(() => {
-        subscribe(forceUpdate);
-      }, getState);
+      const state = useSyncExternalStore(subscribe, getState);
+
       const stateProps = mapStateToProps(state);
 
       return <WrappedComponent {...props} {...stateProps} {...dispatchProps} />;
@@ -56,20 +57,12 @@ export const connect = (mapStateToProps, mapDispatchToProps) => {
   };
 };
 
-function useForceUpdate() {
-  const [state, setState] = useState(0);
-  const update = useCallback(() => {
-    setState((prev) => prev + 1);
-  }, []);
-  return update;
-}
-
-export function useSelector(selector) {
+export function useSelector(selector, equalityFn) {
   const store = useContext(Context);
   const { getState, subscribe } = store;
   // const selectedState = selector(getState());
 
-  const forceUpdate = useForceUpdate();
+  // const forceUpdate = useForceUpdate();
 
   // useLayoutEffect(() => {
   //   const unsubscribe = subscribe(() => {
@@ -80,12 +73,15 @@ export function useSelector(selector) {
   //   };
   // }, [subscribe]);
 
-  const state = useSyncExternalStore(() => {
-    subscribe(forceUpdate);
-  }, getState);
+  const state = useSyncExternalStoreWithSelector(
+    subscribe,
+    getState,
+    getState,
+    selector,
+    equalityFn
+  );
 
-  const selectedState = selector(state);
-  return selectedState;
+  return state;
 }
 
 export function useDispatch(selector) {

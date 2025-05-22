@@ -2,7 +2,7 @@ import { Component } from "react";
 import store from "./store";
 export default class ReduxPage extends Component {
   componentDidMount() {
-    //高速react,一旦state变化(执行dispatch)，就执行的事件
+    //告诉react,一旦state变化(执行dispatch)，就执行的事件
     this.unsubscribe = store.subscribe(() => {
       this.forceUpdate();
     });
@@ -18,6 +18,7 @@ export default class ReduxPage extends Component {
 
   minus = () => {
     store.dispatch((dispatch) => {
+      //异步
       setTimeout(() => {
         dispatch({ type: "MINUS" });
       }, 1000);

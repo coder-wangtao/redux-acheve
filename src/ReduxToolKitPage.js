@@ -1,9 +1,12 @@
 import { useLayoutEffect, useReducer } from "react";
 import { increment, incrementByAmount } from "./store/counterSlice";
 import store from "./store/rtkStore";
+
 export default function ReduxToolKitPage(props) {
   const counter = store.getState().counter.value;
+
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
+
   useLayoutEffect(() => {
     const unsubscribe = store.subscribe(() => {
       forceUpdate();

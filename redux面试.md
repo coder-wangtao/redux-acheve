@@ -28,6 +28,7 @@ const [state, dispatch] = useReducer(counterReducer, "0", init);
 ); -->
 
 applyMiddleware 最主要的目的是返回增强后的 dispatch，在执行中间件的时候有一个很重要的函数 compose，这个 compose 主要是通过 reduce 从后向前依次执行[promise, thunk, logger]里的中间件，执行完前一个函数的返回值，会作为后一个函数的参数
+中间件是运行在action发送出去，达到reducer之前的一段代码，就可以把代码调用流程变为action -> Middlewares -> reducer，这样我们可以改变数据流，实现例如异步action、action过滤、日志输入、异常报告等功能
 
 promise -> 如果 dispatch 传入的 action 是一个 promise，那么 promise 中间会执行 Promise.then,把 promise 执行完的参数传给原来的 dispatch({})重新走 [promise,thunk,logger]
 
